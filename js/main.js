@@ -1,3 +1,4 @@
+//set up card array
 var cards = [
 {
   rank:"queen",
@@ -16,15 +17,35 @@ var cards = [
 },
 {
   rank:"king",
-  suit:"Diamonds",
+  suit:"diamonds",
   cardImage:"images/king-of-diamonds.png"
 }
 ];
+
 var cardsInPlay=[];
+
+//set up variables for scoreboard
 var success="0";
 var tries="0";
 
+//Fisher-Yates Shuffle
+function shuffle(array) {
+  var m = array.length, t, i;
+  // While there remain elements to shuffle…
+  while (m) {
+    // Pick a remaining element…
+    i = Math.floor(Math.random() * m--);
+    // And swap it with the current element.
+    t = array[m];
+    array[m] = array[i];
+    array[i] = t;
+  }
+  return array;
+}
+
+//create the board
 var createBoard = function(){
+  shuffle(cards);
   for (var i=0; i<cards.length; i++){
     var cardElement = document.createElement("img");
     cardElement.setAttribute("src","images/back.png");
@@ -35,8 +56,10 @@ var createBoard = function(){
   }
 }
 
+//check if cards match
 var checkForMatch = function(){
   if (cardsInPlay[0] === cardsInPlay[1]) {
+    console.log(cardsInPlay);
   alert("You found a match!");
   success = parseInt(success)+1;
   tries = parseInt(tries)+1;
@@ -56,6 +79,7 @@ var checkForMatch = function(){
 }
 }
 
+//reset board (no randomization)
 var resetBoard = function(){
   cardsInPlay.pop();
   cardsInPlay.pop();
@@ -63,6 +87,7 @@ var resetBoard = function(){
   for(var i=0; i<cards.length; i++){
     images[i].setAttribute("src","images/back.png");
   }
+
 }
 
 var flipCard = function(){
@@ -83,10 +108,16 @@ var updateScore = function(){
 
 var resetBtn = document.getElementById("reset");
 
+//resets everything AND randomizes
 var resetAll = function(){
   var c = confirm("Are you sure? This will reset the board AND your score!");
   if(c){
     resetBoard();
+    var images = document.getElementsByTagName("img");
+    for (var i = 0; i <cards.length; i++) {
+      images[0].parentNode.removeChild(images[0]);
+  }
+    createBoard();
     tries="0";
     success="0";
     updateScore();
